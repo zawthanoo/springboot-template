@@ -37,12 +37,12 @@ pipeline {
             POM_VERSION = pom.version
             POM_VERSION = POM_VERSION.replaceAll("-SNAPSHOT", "")
     	    GIT_COMMIT_SHORT = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim();
-    	    DOCKER_TAB_VERSION = "${POM_VERSION}-${GIT_COMMIT_SHORT}-$BUILD_NUMBER"
+    	    DOCKER_TAB_VERSION = "${POM_VERSION}-${GIT_COMMIT[0..7]}-$BUILD_NUMBER"
     	    
     	    ARTIFACT_ID = pom.artifactId
-    	    
-            echo "ArtifactId: ${ARTIFACT_ID}, pom-version: ${POM_VERSION}"    	    
-            echo "Git commitId : ${GIT_COMMIT[0..7]}"
+
+    	      echo "Git commitId : ${GIT_COMMIT[0..7]}"
+            echo "ArtifactId: ${ARTIFACT_ID}, pom-version: ${POM_VERSION}"    	                
       }
       }
     }
