@@ -42,7 +42,8 @@ pipeline {
     	    ARTIFACT_ID = pom.artifactId
     	    
             echo "ArtifactId: ${ARTIFACT_ID}, pom-version: ${POM_VERSION}"    	    
-	    }
+            echo ">>>>>>>>>>>>>>${GIT_REVISION,length=8}"
+      }
       }
     }
     
