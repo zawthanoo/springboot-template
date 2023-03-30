@@ -1,0 +1,89 @@
+def POM_VERSION
+def GIT_COMMIT_SHORT
+def DOCKER_TAB_VERSION
+def ARTIFACT_ID
+
+pipeline {
+
+  agent any
+  
+  stages {
+    stage('Clean Workspace') {
+	      steps {
+	        deleteDir()
+	      }
+	 } 
+	 
+	 stage('Initialize') {
+	      steps {
+		    script {
+			    def dockerHome = tool 'wave_docker'
+          		    def mavenHome  = tool 'wave_maven'
+			    env.PATH = "${dockerHome}/bin:${mavenHome}/bin:${env.PATH}" 
+		    }
+	      }
+	 }
+  
+    stage('Cloning Git') {
+      steps {
+          checkout scm
+      }
+    }
+    
+    stage('Initialize the variables') {
+      steps {
+	    script {
+            def pom = readMavenPom file: 'pom.xml'
+            POM_VERSION = pom.version
+            POM_VERSION = POM_VERSION.replaceAll("-SNAPSHOT", "")
+    	    GIT_COMMIT_SHORT = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim();
+    	    DOCKER_TAB_VERSION = "${POM_VERSION}-${GIT_COMMIT_SHORT}-$BUILD_NUMBER"
+    	    
+    	    ARTIFACT_ID = pom.artifactId
+    	    
+            echo "ArtifactId: ${ARTIFACT_ID}, pom-version: ${POM_VERSION}"    	    
+	    }
+      }
+    }
+    
+    stage('Build Package') {
+      steps {
+        script {
+          sh "mvn dependency:go-offline"
+          sh "mvn versions:set -DnewVersion=${DOCKER_TAB_VERSION}"
+          sh "mvn -DskipTests clean package"
+	}
+      }
+    }
+    
+    stage('Build Docker Image') {
+      steps{
+        script {
+          sh "cp target/*.jar jenkins/apps/"
+          sh 'docker login -u $DOCKER_USER -p "$DOCKER_PASS" $DOCKER_REPO'
+          echo "$DOCKER_REPO/$DOCKER_REPO_ORG/${ARTIFACT_ID}:${DOCKER_TAB_VERSION}"
+          sh "docker build -t $DOCKER_REPO/$DOCKER_REPO_ORG/${ARTIFACT_ID}:${DOCKER_TAB_VERSION} jenkins"
+          sh "docker push $DOCKER_REPO/$DOCKER_REPO_ORG/${ARTIFACT_ID}:${DOCKER_TAB_VERSION}"
+          echo "Build docker images is done. ${ARTIFACT_ID}:${DOCKER_TAB_VERSION}"
+        }   
+      }
+    }
+    stage('MS-Team Notificaiton') {
+        steps {
+            office365ConnectorSend webhookUrl: 'https://digitalmoney.webhook.office.com/webhookb2/6c283069-7cec-4f7c-b3e8-a0dbef261a9b@2217afdd-0f00-4aaa-bdcf-a3966d07a623/JenkinsCI/0c7e6d752453450c80d3631896c2ed8d/876c4c25-85c3-46f6-b022-e80190612a11',
+            message: "Build docker images is done. ${ARTIFACT_ID}:${DOCKER_TAB_VERSION}",
+            status: 'Success',
+            color: '#0000FF'           
+        }
+    }
+    
+    stage('Clear Local Docker Image') {
+      steps{
+        script {
+          sh "docker rmi $DOCKER_REPO/$DOCKER_REPO_ORG/${ARTIFACT_ID}:${DOCKER_TAB_VERSION}"
+          echo "Clear Local Docker image. ${ARTIFACT_ID}:${DOCKER_TAB_VERSION}"
+        }   
+      }
+    }    
+  }
+}
