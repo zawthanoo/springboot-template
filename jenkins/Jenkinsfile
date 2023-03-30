@@ -42,7 +42,7 @@ pipeline {
     	    ARTIFACT_ID = pom.artifactId
     	    
             echo "ArtifactId: ${ARTIFACT_ID}, pom-version: ${POM_VERSION}"    	    
-            echo ">>>>>>>>>>>>>>${GIT_REVISION,length=8}"
+            echo "Git commitId : ${GIT_COMMIT[0..7]}"
       }
       }
     }
