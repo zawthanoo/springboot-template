@@ -1,0 +1,51 @@
+server:
+  port: 8082
+  servlet:
+    contextPath: /batch
+  jackson:
+    date-format: yyyy-MM-dd
+
+# --------------------------------------------------
+# swagger / openapi config
+# --------------------------------------------------
+springdoc:
+  packagesToScan: com.mutu.spring
+  api-docs.path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+appInfo:
+  name: '@project.name@'
+  description: '@project.description@'
+  version: '@project.version@'
+  license.name: 'Mutu'
+  license.url: 'http://mutu.nocontact.com'
+
+# --------------------------------------------------
+# CORS Config
+# --------------------------------------------------
+cors:
+  headers:
+    - "X-XSS-Protection: 1"
+    - "X-Content-Type-Options: nosniff"
+    - "Cache-Control: no-cache, no-store, max-age=0, must-revalidate"
+    - "Pragma: no-cache"
+    - "Expires: 0"
+    - "X-Frame-Options: SAMEORIGIN"
+    - "Content-Security-Policy: script-src 'self'"
+    - "Vary: Origin"
+    - "Access-Control-Allow-Origin: *"
+    - "Access-Control-Allow-Credentials: true"
+    - "Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    - "Access-Control-Allow-Headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy"
+    - "Access-Control-Expose-Headers: Authorization,Content-Disposition"
+# --------------------------------------------------
+# log4j2 + ELK
+# --------------------------------------------------
+log4j2:
+  logstashHost: 192.168.0.129
+  logstashPort: 4560
+header-key-list:
+  log4jThreadContextList: x-root-correlation-id
+componentLoggerEnabled: false  
+
