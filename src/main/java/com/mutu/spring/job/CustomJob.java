@@ -3,9 +3,17 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ObjectMessage;
+
+import com.mutu.spring.common.dto.LogMessage;
 
 
 public class CustomJob implements Runnable {
+	
+	Logger logger = LogManager.getLogger(CustomJob.class);
+	
 	private String jobName;
 	private String cronExp;
 	private String curl;
@@ -61,9 +69,11 @@ public class CustomJob implements Runnable {
 
 			InputStream responseIs = pr.getInputStream();
 			String response = IOUtils.toString(responseIs, StandardCharsets.UTF_8);
-			System.out.println(response);		
+			System.out.println(response);
+			logger.debug(new ObjectMessage(new LogMessage("CURL call response " + response, null)));
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(new ObjectMessage(new LogMessage("CURL call faield", e)));
 		}
 	}
 }
