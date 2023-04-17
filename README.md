@@ -64,7 +64,6 @@ Auto exception hadling for Service/Component and DAO layer by using Spring AOP `
 
 ![ELK](images/ELK.png)
 
-
 Sending the logs `Log4j2` to `elasticsearch` by using log4j `Socket` and `JsonLayout`. `Logstash` will filter and send to `elasticsearch`. Setup `ELK`. eg: [docker compose ELK](https://github.com/deviantony/docker-elk). This example is compatible ELK 7.0.0 and above.
 
 log4j2.xml
@@ -150,5 +149,8 @@ output {
 ```
 Note: if you would like to see `log4j` json log without any changes, you can remove filter. 
 
+### CICD
 
+DevOps ref: you need to setup and conifigure Gitlap, Jenkins and Nexus Repo. `jenkins/Dockerfile` & `jenkins/Jenkinsfile`.
 
+![ELK](images/cicd-1.png)
