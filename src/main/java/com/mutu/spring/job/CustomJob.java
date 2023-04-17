@@ -60,7 +60,7 @@ public class CustomJob implements Runnable {
 			curl = curl.replaceAll("\\s{2,}", " ").trim();
 			System.out.println(curl);		
 			
-			ProcessBuilder pb = new ProcessBuilder("/bin/dash", curl);
+			ProcessBuilder pb = new ProcessBuilder("/bin/bash", curl);
 			pb.redirectErrorStream(true);
 			Process pr = pb.start();
 			
