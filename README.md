@@ -18,6 +18,10 @@ appInfo:
   license.name: 'Mutu'
   license.url: 'http://mutu.nocontact.com'
 ```
+swaggerui: `http://host:port/context-path/swagger-ui.html`
+
+apidoc/swagger-file: `http://host:port/context-path/api-doc`
+
 ### CorsFilter
 ---
 
