@@ -108,7 +108,7 @@ logstash.conf. If you use above example(ELK docker compose), Update port `50000`
 input {
   tcp {
     port => 4560
-	type => "json"
+	  type => "json"
     codec => json {
       charset => "UTF-8"
     }	
