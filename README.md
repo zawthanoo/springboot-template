@@ -77,7 +77,7 @@ log4j2.xml
 				<KeyValuePair key="timestamp" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}" />
 			</JsonLayout>            
         </Console>
-		<Socket name="Socket" host="<<SERVER_ADDRESS>>" port="<<SERVER_ADDRESS>>" protocol="TCP" bufferedIO="true" bufferSize="1048576"
+		<Socket name="Socket" host="<<SERVER_ADDRESS>>" port="<<SERVER_PORT>>" protocol="TCP" bufferedIO="true" bufferSize="1048576"
 			immediateFail="false" immediateFlush="false" connectTimeoutMillis="2000" reconnectionDelayMillis="5000" ignoreExceptions="true"> 		    
 			<JsonLayout properties="false" stacktraceAsString="true" includeStacktrace="true" eventEol="true" compact="true" objectMessageAsJsonObject="true">
 				<KeyValuePair key="x-root-correlation-id" value="$${ctx:x-root-correlation-id}"/>
