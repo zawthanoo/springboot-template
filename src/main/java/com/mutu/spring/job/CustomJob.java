@@ -60,13 +60,13 @@ public class CustomJob implements Runnable {
 			curl = curl.replaceAll("\\s{2,}", " ").trim();
 			System.out.println(curl);		
 			
-			ProcessBuilder pb = new ProcessBuilder(curl);
-			pb.redirectErrorStream(true);
-			Process pr = pb.start();
+//			ProcessBuilder pb = new ProcessBuilder(curl);
+//			pb.redirectErrorStream(true);
+//			Process pr = pb.start();
 			
-//			Runtime rt = Runtime.getRuntime();
-//			Process pr = rt.exec(curl);
-
+			Runtime rt = Runtime.getRuntime();
+			Process pr = rt.exec(curl);
+			pr.waitFor();
 			InputStream responseIs = pr.getInputStream();
 			String response = IOUtils.toString(responseIs, StandardCharsets.UTF_8);
 			System.out.println(response);
