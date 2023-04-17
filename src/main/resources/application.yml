@@ -45,9 +45,6 @@ cors:
 # --------------------------------------------------
 # log4j2 + ELK
 # --------------------------------------------------
-log4j2:
-  logstashHost: 192.168.0.129
-  logstashPort: 4560
 header-key-list:
   log4jThreadContextList: x-root-correlation-id
 componentLoggerEnabled: false  
