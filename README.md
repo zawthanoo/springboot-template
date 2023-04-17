@@ -91,7 +91,7 @@ log4j2.xml
     <Loggers>
         <AsyncLogger name="com.mutu" level="debug" additivity="false">
 			<AppenderRef ref="Console" />
-			<!-- <AppenderRef ref="Socket" />  -->
+			<AppenderRef ref="Socket" />
 		</AsyncLogger>
 		<AsyncLogger name="org.apache.catalina.core" level="off" additivity="false">
 			<AppenderRef ref="Console" />
