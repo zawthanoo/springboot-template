@@ -67,6 +67,7 @@ public class RestExceptionHandler  {
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ApiError> handle(Exception ex) {
 		ApiError apiError = new ApiError(ApiStatus.FAILED);
+		ex.printStackTrace();
 		apiError.setMessage(ex.getMessage());
 		apiError.setMessageCode(MessageCode.UNEXPECTED_ERROR);
 		apiError.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);

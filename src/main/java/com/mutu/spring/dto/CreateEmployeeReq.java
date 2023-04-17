@@ -11,6 +11,5 @@ public class CreateEmployeeReq {
     private String empNo;
     private String firstName;
     private String lastName;
-    private String dob;
     private String email;
 }

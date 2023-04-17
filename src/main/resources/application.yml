@@ -4,7 +4,10 @@ server:
     contextPath: /batch
   jackson:
     date-format: yyyy-MM-dd
-
+spring:
+  jackson:
+    parser:
+      allow-backslash-escaping-any-character: true
 # --------------------------------------------------
 # swagger / openapi config
 # --------------------------------------------------

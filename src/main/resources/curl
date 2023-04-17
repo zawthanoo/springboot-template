@@ -4,6 +4,6 @@ curl --location 'http://localhost:8888/batch/create-emp' \
 --data-raw '{
     "empNo": "JP0006",
     "firstName": "Oliver6",
-    "lastName": "Queen6'\''s Jon",
+    "lastName": "Queen6's Jon",
     "email": "oliver6@jp.com.sg"
 }'
