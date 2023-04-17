@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mutu.spring.dto.CreateBatchJobDto;
+import com.mutu.spring.dto.CreateEmployeeReq;
 import com.mutu.spring.job.ScheduleTaskService;
+import com.mutu.spring.service.EmployeeService;
 
 import jakarta.validation.Valid;
 
@@ -22,10 +24,19 @@ public class ApiController {
 
 	@Autowired
 	private ScheduleTaskService acheduleTaskService;
+	
+	@Autowired
+	private EmployeeService employeeService;
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public ResponseEntity<String> creatEmployee(@Valid @RequestBody CreateBatchJobDto createBatchJobDto) {
 		acheduleTaskService.addJob(createBatchJobDto);
+		return ResponseEntity.ok("success");
+	}
+	
+	@RequestMapping(value = "/create-emp", method = RequestMethod.POST)
+	public ResponseEntity<String> creatEmployee(@Valid @RequestBody CreateEmployeeReq employee) {
+		employeeService.creatEmployee(employee);
 		return ResponseEntity.ok("success");
 	}
 }

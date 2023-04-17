@@ -1,12 +1,9 @@
 package com.mutu.spring.job;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-import org.springframework.boot.logging.LoggingSystem;
+import org.apache.commons.io.IOUtils;
+
 
 public class CustomJob implements Runnable {
 	private String jobName;
@@ -33,18 +30,40 @@ public class CustomJob implements Runnable {
 
 	@Override
 	public void run() {
-		Logger logger = LogManager.getLogger("elasticsearch");
+//		Logger logger = LogManager.getLogger("elasticsearch");
+//
+//        ThreadContext.put("myFavouriteVariable", UUID.randomUUID().toString());
+//        ThreadContext.put("anotherFavVariable", "");
+//        ThreadContext.put("myStructuredJSON", "{\"yes\":100,\"you\":\"can\"}");
+//        logger.info("Hello, World!");
+//        ThreadContext.remove("myFavouriteVariable");
+//        ThreadContext.remove("myStructuredJSON");
+//
+//        LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(5));
+//
+//        LoggingSystem.get(logger.getClass().getClassLoader()).getShutdownHandler().run();		
+//		System.out.println("I am running...");
+		try {
+			ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+			InputStream is = classloader.getResourceAsStream("curl");
+			String curl = IOUtils.toString(is, StandardCharsets.UTF_8);
+			curl = curl.replace("\n", "").replace("\r", "");
+			curl = curl.replace("\\--", "--");
+			curl = curl.replaceAll("\\s{2,}", " ").trim();
+			System.out.println(curl);		
+			
+//			ProcessBuilder pb = new ProcessBuilder(curl);
+//			pb.redirectErrorStream(true);
+//			Process pr = pb.start();
+			
+			Runtime rt = Runtime.getRuntime();
+			Process pr = rt.exec(curl);
 
-        ThreadContext.put("myFavouriteVariable", UUID.randomUUID().toString());
-        ThreadContext.put("anotherFavVariable", "");
-        ThreadContext.put("myStructuredJSON", "{\"yes\":100,\"you\":\"can\"}");
-        logger.info("Hello, World!");
-        ThreadContext.remove("myFavouriteVariable");
-        ThreadContext.remove("myStructuredJSON");
-
-        LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(5));
-
-        LoggingSystem.get(logger.getClass().getClassLoader()).getShutdownHandler().run();		
-		System.out.println("I am running...");
+			InputStream responseIs = pr.getInputStream();
+			String response = IOUtils.toString(responseIs, StandardCharsets.UTF_8);
+			System.out.println(response);		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
