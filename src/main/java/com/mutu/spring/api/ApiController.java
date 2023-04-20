@@ -23,10 +23,16 @@ public class ApiController {
 
 	@Autowired
 	private EmployeeService employeeService;
-
+	
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	public ResponseEntity<String> hello() {
+		return ResponseEntity.ok("HELLO WORLD!");
+	}
+	
 	@RequestMapping(value = "/create-emp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> creatEmployee(@Valid @RequestBody CreateEmployeeReq employee) {
 		employeeService.creatEmployee(employee);
 		return ResponseEntity.ok("success");
 	}
+	
 }

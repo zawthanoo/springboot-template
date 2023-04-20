@@ -2,6 +2,7 @@ package com.mutu.spring;
 
 import java.util.TimeZone;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -18,6 +19,7 @@ import jakarta.annotation.PostConstruct;
 @SpringBootApplication
 @EnableAsync
 @ComponentScan({"com.mutu.spring.*"})
+@MapperScan(basePackages = { "com.mutu.spring.zgen.mapper", "com.mutu.spring.custommapper." })
 public class Application extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {

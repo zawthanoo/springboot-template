@@ -1,7 +1,7 @@
 server:
   port: 8888
   servlet:
-    contextPath: /batch
+    contextPath: /template
   jackson:
     date-format: yyyy-MM-dd
 spring:
@@ -49,3 +49,16 @@ header-key-list:
   log4jThreadContextList: x-root-correlation-id
 componentLoggerEnabled: false  
 
+# ------------------------------------------------------------------------------------------
+# HTTPS using Self-Signed Certificate
+#
+# keytool -genkeypair -alias mutu -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore D:/mutu.p12 -validity 3650 <-- generate Self-Signed Certificate (CA ROOT)
+#
+# keytool -export -keystore D:/mutu.p12 -alias mutu -file D:/local-cert.crt -validity 3650 <-- generate certificate
+# ------------------------------------------------------------------------------------------
+server.ssl:
+  enabled: true
+  key-store-type: PKCS12
+  key-store: classpath:keystore/mutu.p12
+  key-store-password: 123456
+  key-alias: mutu

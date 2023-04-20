@@ -1,4 +1,17 @@
-# springboot-3.0.X project templat with JDK-17
+# springboot3-template
+
+This is template project for springboot:3.0.x + JKD 17.
+
+## Feature overview
+
+*   [x] OpenAPI 3.0.1
+*   [x] CorsFilter with application config
+*   [x] Auto request/response logging
+*   [x] Global Exception handling
+*   [x] REST API Exception handling
+*   [x] Log4j2 + ELK
+*   [x] CICD (gitlab + jenkins + nexusrepo)
+
 
 ### OpenAPI 3.0.1
 ---
@@ -44,7 +57,7 @@ cors:
     - "Access-Control-Allow-Headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy"
     - "Access-Control-Expose-Headers: Authorization,Content-Disposition"
 ```
-### Request/Response auto loging
+### Request/Response auto logging
 ---
 
 Auto logging for all request and response by `CustomRequestBodyAdviceAdapter.java` and `CustomResponseBodyAdviceAdapter`. If you would like to log one or more header entried log process, you can configure as below. `CustomLogInterceptor.java` will collect and put into `ThreadContext`. eg; root-correlation-id, we need pass the id accross over the `microservices`.
