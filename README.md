@@ -4,14 +4,15 @@ This is template project for springboot:3.0.x + JKD 17.
 
 ## Feature overview
 
-*   [x] CorsFilter with application config
-*   [x] Auto request/response logging
-*   [x] Global Exception handling
-*   [x] REST API Exception handling
-*   [x] MyBatis-3 + H2(runtime)
-*   [x] OpenAPI 3.0.1
-*   [x] Log4j2 + ELK
-*   [x] CICD (gitlab + jenkins + nexusrepo)
+*   [x] **CorsFilter with application config**
+*   [x] **Auto request/response logging**
+*   [x] **Global Exception handling**
+*   [x] **REST API Exception handling**
+*   [x] **MyBatis-3 + H2(runtime)**
+*   [x] **OpenAPI 3.0.1**
+*   [x] **Self-Signed Certificate**
+*   [x] **Log4j2 + ELK**
+*   [x] **CICD (gitlab + jenkins + nexusrepo)**
 
 
 ### CorsFilter
@@ -149,6 +150,28 @@ appInfo:
 swaggerui: `http://host:port/context-path/swagger-ui.html`
 
 apidoc/swagger-file: `http://host:port/context-path/api-doc`
+
+
+### Self-Signed Certificate
+---
+Enabling `HTTPS` in Spring Boot. Create a self-signed certificate- PKCS12.
+
+```sh
+keytool -genkeypair -alias YOUR_ALIGS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore <<FILE_PATH>>/YOUR.p12 -validity 3650
+```
+Copy `YOUR.p12` to `src/main/resoruces/keystore` directory. Configure the following config.
+
+```yaml
+server.ssl:
+  enabled: true
+  key-store-type: PKCS12
+  key-store: classpath:keystore/YOUR.p12
+  key-store-password: YOUR_PASSWORD
+  key-alias: YOUR_ALIGS
+```
+Note: `keytool` built-in tool of JVM. Goto JAVA_HOME/bin.
+
+**Related**: [springboot-ssl-restclient](http://192.168.0.190/local/springboot-ssl-restclient)
 
 
 ### Log4j2 + ELK
