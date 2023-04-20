@@ -4,36 +4,15 @@ This is template project for springboot:3.0.x + JKD 17.
 
 ## Feature overview
 
-*   [x] OpenAPI 3.0.1
 *   [x] CorsFilter with application config
 *   [x] Auto request/response logging
 *   [x] Global Exception handling
 *   [x] REST API Exception handling
+*   [x] MyBatis-3 + H2(runtime)
+*   [x] OpenAPI 3.0.1
 *   [x] Log4j2 + ELK
 *   [x] CICD (gitlab + jenkins + nexusrepo)
 
-
-### OpenAPI 3.0.1
----
-`OpenApiConfig.java` is custom configuration for open api.
-
-```yaml
-springdoc:
-  packagesToScan: com.mutu.spring
-  api-docs.path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-appInfo:
-  name: '@project.name@'
-  description: '@project.description@'
-  version: '@project.version@'
-  license.name: 'Mutu'
-  license.url: 'http://mutu.nocontact.com'
-```
-swaggerui: `http://host:port/context-path/swagger-ui.html`
-
-apidoc/swagger-file: `http://host:port/context-path/api-doc`
 
 ### CorsFilter
 ---
@@ -57,6 +36,7 @@ cors:
     - "Access-Control-Allow-Headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy"
     - "Access-Control-Expose-Headers: Authorization,Content-Disposition"
 ```
+
 ### Request/Response auto logging
 ---
 
@@ -71,10 +51,105 @@ header-key-list:
 ---
 Auto exception hadling for Service/Component and DAO layer by using Spring AOP `ExceptionHandlerAspect.java` and `PointCutConfig.java`. If there is no override exception handling, it will throws `BusinessLogicException` and `DAOException` base on process.
 
+
 ### Exception handling for REST API
 ---
 
 `RestExceptionHandler.java` is handler to handle the global runtime `Exception.java` and custom exception( `BusinessLogicException.java` and `DAOException.java`).
+
+###  MyBatis-3 + H2(runtime)
+---
+
+This is a code generator for MyBatis. Here is geneated by java program.
+
+```java
+List<String> warnings = new ArrayList<String>();
+boolean overwrite = true;
+ConfigurationParser cp = new ConfigurationParser(warnings);
+Configuration config = cp.parseConfiguration(new FileInputStream("src/main/resources/mybatic-generator.xml"));
+DefaultShellCallback callback = new DefaultShellCallback(overwrite);
+MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
+myBatisGenerator.generate(null);
+```
+
+mybatic-generator.xml
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<context id="springboot-mybatis">
+		<plugin type="org.mybatis.generator.plugins.RowBoundsPlugin" />
+		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+			<property name="useLegacyGeneratedAnnotation" value="true" />
+		</commentGenerator>
+		<jdbcConnection driverClass="org.h2.Driver" connectionURL="jdbc:h2:file:~/testdb" userId="sa" password="" />
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false"/>
+		</javaTypeResolver>		
+		<javaModelGenerator targetPackage="com.mutu.spring.zgen.entity" targetProject=".\src\main\java\" />
+		<sqlMapGenerator targetPackage="com.mutu.spring.zgen.mapper" targetProject=".\src\main\resources\" />
+		<javaClientGenerator targetPackage="com.mutu.spring.zgen.mapper" targetProject=".\src\main\java\" type="XMLMAPPER" />
+		<table schema="public" tableName="%" >
+		</table>
+	</context>
+</generatorConfiguration>
+```
+mybatic-generator-oracle.xml
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<context id="spring-primefaces">
+		<plugin type="org.mybatis.generator.plugins.RowBoundsPlugin" />
+		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+			<property name="useLegacyGeneratedAnnotation" value="true" />
+		</commentGenerator>
+		<jdbcConnection driverClass="oracle.jdbc.OracleDriver" connectionURL="ORACLE_JDBC_URL" userId="username" password="password" />
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false"/>
+		</javaTypeResolver>		
+		<javaModelGenerator targetPackage="com.mutu.spring.zgen.entity" targetProject=".\src\main\java\" />
+		<sqlMapGenerator targetPackage="com.mutu.spring.zgen.mapper" targetProject=".\src\main\resources\" />
+		<javaClientGenerator targetPackage="com.mutu.spring.zgen.mapper" targetProject=".\src\main\java\" type="XMLMAPPER" />
+		<table schema="YOUR_SCHEMA" tableName="MY_TABLE_1" >
+			<columnOverride column="ID" property="id" javaType="long"/>
+			<columnOverride column="AGE" property="age" javaType="int"/>
+		</table>
+		<table schema="YOUR_SCHEMA" tableName="MY_TABLE_2" >
+			<columnOverride column="ID" property="id" javaType="long"/>
+			<columnOverride column="YEAR_EXP" property="exp" javaType="INT"/>
+		</table>
+	</context>
+</generatorConfiguration>
+```
+
+### OpenAPI 3.0.1
+---
+
+`OpenApiConfig.java` is custom configuration for open api.
+
+```yaml
+springdoc:
+  packagesToScan: com.mutu.spring
+  api-docs.path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+appInfo:
+  name: '@project.name@'
+  description: '@project.description@'
+  version: '@project.version@'
+  license.name: 'Mutu'
+  license.url: 'http://mutu.nocontact.com'
+```
+swaggerui: `http://host:port/context-path/swagger-ui.html`
+
+apidoc/swagger-file: `http://host:port/context-path/api-doc`
+
 
 ### Log4j2 + ELK
 ---
