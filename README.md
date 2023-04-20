@@ -171,7 +171,7 @@ server.ssl:
 ```
 Note: `keytool` built-in tool of JVM. Goto JAVA_HOME/bin.
 
-**Related**: [springboot-ssl-restclient](http://192.168.0.190/local/springboot-ssl-restclient)
+**Related**: [springboot-ssl-restclient](https://github.com/zawthanoo/springboot-ssl-restclient)
 
 
 ### Log4j2 + ELK
