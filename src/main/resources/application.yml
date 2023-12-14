@@ -1,12 +1,72 @@
-#DataSource Configuration
-spring:
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/spring-rest?useUnicode=true&characterEncoding=utf8
-    username: root
-    password: root
+management.endpoint.health.probes.enabled: true
+management.health.livenessState.enabled: true
+management.health.readinessState.enabled: true
+
+server:
+  port: 8888
+  servlet:
+    contextPath: /demo
   jackson:
     date-format: yyyy-MM-dd
-server:
-  servlet:
-    contextPath: /api    
+
+spring.main.allow-bean-definition-overriding: true
+# --------------------------------------------------
+# database config
+# --------------------------------------------------
+spring:
+  datasource:
+    url: jdbc:h2:mem:mydb
+#    url: jdbc:h2:file:/data/demo <- prevent data loss after application restart.
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+    data: classpath:data.sql
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate.ddl-auto: none
+spring.h2.console.enabled: true
+
+# --------------------------------------------------
+# Oauth 2, security config
+# --------------------------------------------------
+spring.security.enabled: false
+spring.security.oauth2.resourceserver.jwt.issuer-uri: http://localhost:8080/realms/springboot-keycloak
+spring.security.oauth2.resourceserver.jwt.jwk-set-uri: http://localhost:8080/realms/springboot-keycloak/protocol/openid-connect/certs
+logging.level.org.springframework.security: DEBUG
+
+# --------------------------------------------------
+# CORS Config
+# --------------------------------------------------
+corsConfig:
+  allow-origin: "*"
+  allow-credentials: true 
+  allow-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+  allow-headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy
+  expose-headers: Authorization,Content-Disposition
+# --------------------------------------------------
+# swagger / openapi config
+# --------------------------------------------------
+springdoc:
+  packagesToScan: org.jp.spring
+  api-docs.path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+appInfo:
+  name: '@project.name@'
+  description: '@project.description@'
+  version: '@project.version@'
+  license.name: 'Mutu'
+  license.url: 'http://mutu.nocontact.com'
+# --------------------------------------------------
+# logging
+# --------------------------------------------------
+logging.level: DEBUG
+logging.level.root: INFO
+logging.level.org.apache: ERROR
+logging.level.org.springframework: ERROR
+logging.level.org.springframework.jdbc.core.JdbcTemplate: DEBUG
+#logging.file.name: ./log/springboot-template.log
+#logging.file.name=/home/jrpabg1/log/springboot-template.log
+#logging.pattern.file: "[%d{yyyy-MM-dd HH:mm:ss, Asia/Singapore}][%-5level][%X{service}][%X{version}][%X{controller}][%X{method}][%X{x-forwarded-for}][%X{user-account}][%X{session-id}][%X{activity-id}][%-40.40logger{39}] : %msg%n"
+logging.pattern.console: "[%d{yyyy-MM-dd HH:mm:ss, Asia/Singapore}][%-5level][%X{service}][%X{version}][%X{controller}][%X{method}][%X{x-forwarded-for}][%X{user-account}][%X{session-id}][%X{activity-id}][%-40.40logger{39}] : %msg%n"
