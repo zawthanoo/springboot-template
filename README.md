@@ -1,6 +1,4 @@
-# springboot3-template
-
-This is template project for springboot:3.0.x + JKD 17.
+## springboot:3.0.x + JKD 17.
 
 ## Feature overview
 
