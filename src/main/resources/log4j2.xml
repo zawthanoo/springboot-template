@@ -2,36 +2,33 @@
 <Configuration>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <JsonLayout properties="false" stacktraceAsString="true" includeStacktrace="true" eventEol="true" compact="false" objectMessageAsJsonObject="true">
-				<KeyValuePair key="x-root-correlation-id" value="$${ctx:x-root-correlation-id}"/>
-				<KeyValuePair key="process-name" value="$${ctx:process-name}"/>
-				<KeyValuePair key="applicationName" value="springboot-demo"/>
-				<KeyValuePair key="timestamp" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}" />
-			</JsonLayout>            
+            <PatternLayout
+                pattern="%d{yyyy-MMM-dd HH:mm:ss a} %-5level %logger{36} - %msg%n" />
         </Console>
-        <!-- 
-		<Socket name="Socket" host="192.168.0.129" port="50000" protocol="TCP" bufferedIO="true" bufferSize="1048576"
-			immediateFail="false" immediateFlush="false" connectTimeoutMillis="2000" reconnectionDelayMillis="5000" ignoreExceptions="true"> 		    
-			<JsonLayout properties="false" stacktraceAsString="true" includeStacktrace="true" eventEol="true" compact="true" objectMessageAsJsonObject="true">
-				<KeyValuePair key="x-root-correlation-id" value="$${ctx:x-root-correlation-id}"/>
-				<KeyValuePair key="process-name" value="$${ctx:process-name}"/>
-				<KeyValuePair key="applicationName" value="springboot-demo"/>
-				<KeyValuePair key="timestamp" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}" />
-			</JsonLayout> 			
-		</Socket>
-		 -->
+ 
+        <RollingFile name="RollingFile"
+            fileName="./logs/my-application.log"
+            filePattern="./logs/$${date:yyyy-MMM}/my-application-%d{dd-MMM-yyyy}-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <!-- rollover on startup, daily and when the file reaches 
+                    10 MegaBytes -->
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy
+                    size="10 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
     </Appenders>
  
     <Loggers>
-        <AsyncLogger name="com.mutu" level="debug" additivity="false">
-			<AppenderRef ref="Console" />
-			<!-- <AppenderRef ref="Socket" />  -->
-		</AsyncLogger>
-		<AsyncLogger name="org.apache.catalina.core" level="off" additivity="false">
-			<AppenderRef ref="Console" />
-		</AsyncLogger>		
-		<AsyncRoot level="error">
-			<AppenderRef ref="Console" />
-		</AsyncRoot>    
+        <Root level="debug">
+        	<AppenderRef ref="Console"/>
+        	<AppenderRef ref="RollingFile" />
+        </Root>
+        <Logger name="com.mutu.spring.rest" level="debug" additivity="false">
+        	<AppenderRef ref="Console"/>
+        	<AppenderRef ref="RollingFile" />
+        </Logger>
     </Loggers>
 </Configuration>

@@ -1,8 +1,7 @@
-/.settings
+/.setting/
 /target/
 /logs
 /.mvn
 .classpath
 .project
-/.vscode
 
