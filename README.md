@@ -6,7 +6,7 @@
 *   [x] **Auto request/response logging**
 *   [x] **Global Exception handling**
 *   [x] **REST API Exception handling**
-*   [x] **Hibernate + H2(runtime)**
+*   [x] **SpringJDBC + H2(runtime)**
 *   [x] **OpenAPI 3.0.1**
 *   [x] **Log4j2 + ELK**
 *   [x] **CICD (gitlab + jenkins + nexusrepo)**
