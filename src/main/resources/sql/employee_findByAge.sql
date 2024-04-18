@@ -1,0 +1,1 @@
+SELECT * FROM EMPLOYEE WHERE AGE >= :fromAge AND AGE <= :toAge;

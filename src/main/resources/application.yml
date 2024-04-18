@@ -1,21 +1,96 @@
 management.endpoint.health.probes.enabled: true
 management.health.livenessState.enabled: true
 management.health.readinessState.enabled: true
+
 server:
   port: 8888
   servlet:
-    contextPath: /template
+    contextPath: /demo
   jackson:
     date-format: yyyy-MM-dd
-spring:
-  jackson:
-    parser:
-      allow-backslash-escaping-any-character: true
+
+spring.main.allow-bean-definition-overriding: true
+spring.h2.console.enabled: true
+# --------------------------------------------------
+# database config
+# --------------------------------------------------
+employee:
+  datasource:
+    jdbcUrl: jdbc:h2:mem:employeedb
+#    jdbcUrl: jdbc:h2:file:/data/demo <- prevent data loss after application restart.
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-timeout: 50000
+      idle-timeout: 300000
+      max-lifetime: 900000
+      maximum-pool-size: 10
+      minimum-idle: 10
+      pool-name: ConnectionPool
+      connection-test-query: select 1 from dual
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        seServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
+department:
+  datasource:
+    jdbcUrl: jdbc:h2:mem:departmentdb
+#    jdbcUrl: jdbc:h2:file:/data/demo <- prevent data loss after application restart.
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-timeout: 50000
+      idle-timeout: 300000
+      max-lifetime: 900000
+      maximum-pool-size: 10
+      minimum-idle: 10
+      pool-name: ConnectionPool
+      connection-test-query: select 1 from dual
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        seServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false        
+
+# --------------------------------------------------
+# Oauth 2, security config
+# --------------------------------------------------
+spring.security.enabled: true
+spring.security.oauth2.resourceserver.jwt.issuer-uri: http://localhost:8080/realms/springboot-keycloak
+spring.security.oauth2.resourceserver.jwt.jwk-set-uri: http://localhost:8080/realms/springboot-keycloak/protocol/openid-connect/certs
+
+# --------------------------------------------------
+# CORS Config
+# --------------------------------------------------
+corsConfig:
+  allow-origin: "*"
+  allow-credentials: true 
+  allow-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+  allow-headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy
+  expose-headers: Authorization,Content-Disposition
 # --------------------------------------------------
 # swagger / openapi config
 # --------------------------------------------------
 springdoc:
-  packagesToScan: com.mutu.spring
+  packagesToScan: org.mutu.example.api
+  enable-native-support: true
   api-docs.path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
@@ -24,44 +99,9 @@ appInfo:
   name: '@project.name@'
   description: '@project.description@'
   version: '@project.version@'
-  license.name: 'Mutu'
+  license.name: 'Springboot Teamplate Project by Mutu'
   license.url: 'http://mutu.nocontact.com'
-
-# --------------------------------------------------
-# CORS Config
-# --------------------------------------------------
-cors:
-  headers:
-    - "X-XSS-Protection: 1"
-    - "X-Content-Type-Options: nosniff"
-    - "Cache-Control: no-cache, no-store, max-age=0, must-revalidate"
-    - "Pragma: no-cache"
-    - "Expires: 0"
-    - "X-Frame-Options: SAMEORIGIN"
-    - "Content-Security-Policy: script-src 'self'"
-    - "Vary: Origin"
-    - "Access-Control-Allow-Origin: *"
-    - "Access-Control-Allow-Credentials: true"
-    - "Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS"
-    - "Access-Control-Allow-Headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy"
-    - "Access-Control-Expose-Headers: Authorization,Content-Disposition"
-# --------------------------------------------------
-# log4j2 + ELK
-# --------------------------------------------------
+  
 header-key-list:
-  log4jThreadContextList: x-root-correlation-id
-componentLoggerEnabled: false  
-
-# ------------------------------------------------------------------------------------------
-# HTTPS using Self-Signed Certificate
-#
-# keytool -genkeypair -alias mutu -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore D:/mutu.p12 -validity 3650 <-- generate Self-Signed Certificate (CA ROOT)
-#
-# keytool -export -keystore D:/mutu.p12 -alias mutu -file D:/local-cert.crt -validity 3650 <-- generate certificate
-# ------------------------------------------------------------------------------------------
-server.ssl:
-  enabled: true
-  key-store-type: PKCS12
-  key-store: classpath:keystore/mutu.p12
-  key-store-password: 123456
-  key-alias: mutu
+#  log4jThreadContextList:
+  log4jThreadContextList: HEADER_KEY_1, HEADER_KEY_2, HEADER_KEY_3  

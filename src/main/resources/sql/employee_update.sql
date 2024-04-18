@@ -1,0 +1,1 @@
+UPDATE EMPLOYEE SET NAME=:name, AGE=:age, DEPARTMENT=:department WHERE ID=:id

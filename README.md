@@ -1,4 +1,4 @@
-## springboot:3.0.x + JKD 17.
+## springboot:3.1.6 + JKD 21.
 
 ## Feature overview
 
@@ -6,9 +6,8 @@
 *   [x] **Auto request/response logging**
 *   [x] **Global Exception handling**
 *   [x] **REST API Exception handling**
-*   [x] **MyBatis-3 + H2(runtime)**
+*   [x] **Hibernate + H2(runtime)**
 *   [x] **OpenAPI 3.0.1**
-*   [x] **Self-Signed Certificate**
 *   [x] **Log4j2 + ELK**
 *   [x] **CICD (gitlab + jenkins + nexusrepo)**
 
@@ -19,21 +18,12 @@
 Configuration base `CorsFilter`.
 
 ```yaml
-cors:
-  headers:
-    - "X-XSS-Protection: 1"
-    - "X-Content-Type-Options: nosniff"
-    - "Cache-Control: no-cache, no-store, max-age=0, must-revalidate"
-    - "Pragma: no-cache"
-    - "Expires: 0"
-    - "X-Frame-Options: SAMEORIGIN"
-    - "Content-Security-Policy: script-src 'self'"
-    - "Vary: Origin"
-    - "Access-Control-Allow-Origin: *"
-    - "Access-Control-Allow-Credentials: true"
-    - "Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS"
-    - "Access-Control-Allow-Headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy"
-    - "Access-Control-Expose-Headers: Authorization,Content-Disposition"
+corsConfig:
+  allow-origin: "*"
+  allow-credentials: true 
+  allow-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+  allow-headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy
+  expose-headers: Authorization,Content-Disposition
 ```
 
 ### Request/Response auto logging
@@ -56,75 +46,6 @@ Auto exception hadling for Service/Component and DAO layer by using Spring AOP `
 
 `RestExceptionHandler.java` is handler to handle the global runtime `Exception.java` and custom exception( `BusinessLogicException.java` and `DAOException.java`).
 
-###  MyBatis-3 + H2(runtime)
----
-
-Code generator for MyBatis. Here is geneated by java program.
-
-```java
-List<String> warnings = new ArrayList<String>();
-boolean overwrite = true;
-ConfigurationParser cp = new ConfigurationParser(warnings);
-Configuration config = cp.parseConfiguration(new FileInputStream("src/main/resources/mybatic-generator.xml"));
-DefaultShellCallback callback = new DefaultShellCallback(overwrite);
-MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
-myBatisGenerator.generate(null);
-```
-
-mybatic-generator.xml
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
-<generatorConfiguration>
-	<context id="springboot-mybatis">
-		<plugin type="org.mybatis.generator.plugins.RowBoundsPlugin" />
-		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
-		<commentGenerator>
-			<property name="suppressAllComments" value="true" />
-			<property name="useLegacyGeneratedAnnotation" value="true" />
-		</commentGenerator>
-		<jdbcConnection driverClass="org.h2.Driver" connectionURL="jdbc:h2:file:~/testdb" userId="sa" password="" />
-		<javaTypeResolver>
-			<property name="forceBigDecimals" value="false"/>
-		</javaTypeResolver>		
-		<javaModelGenerator targetPackage="com.mutu.spring.zgen.entity" targetProject=".\src\main\java\" />
-		<sqlMapGenerator targetPackage="com.mutu.spring.zgen.mapper" targetProject=".\src\main\resources\" />
-		<javaClientGenerator targetPackage="com.mutu.spring.zgen.mapper" targetProject=".\src\main\java\" type="XMLMAPPER" />
-		<table schema="public" tableName="%" >
-		</table>
-	</context>
-</generatorConfiguration>
-```
-mybatic-generator-oracle.xml
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
-<generatorConfiguration>
-	<context id="spring-primefaces">
-		<plugin type="org.mybatis.generator.plugins.RowBoundsPlugin" />
-		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
-		<commentGenerator>
-			<property name="suppressAllComments" value="true" />
-			<property name="useLegacyGeneratedAnnotation" value="true" />
-		</commentGenerator>
-		<jdbcConnection driverClass="oracle.jdbc.OracleDriver" connectionURL="ORACLE_JDBC_URL" userId="username" password="password" />
-		<javaTypeResolver>
-			<property name="forceBigDecimals" value="false"/>
-		</javaTypeResolver>		
-		<javaModelGenerator targetPackage="com.mutu.spring.zgen.entity" targetProject=".\src\main\java\" />
-		<sqlMapGenerator targetPackage="com.mutu.spring.zgen.mapper" targetProject=".\src\main\resources\" />
-		<javaClientGenerator targetPackage="com.mutu.spring.zgen.mapper" targetProject=".\src\main\java\" type="XMLMAPPER" />
-		<table schema="YOUR_SCHEMA" tableName="MY_TABLE_1" >
-			<columnOverride column="ID" property="id" javaType="long"/>
-			<columnOverride column="AGE" property="age" javaType="int"/>
-		</table>
-		<table schema="YOUR_SCHEMA" tableName="MY_TABLE_2" >
-			<columnOverride column="ID" property="id" javaType="long"/>
-			<columnOverride column="YEAR_EXP" property="exp" javaType="INT"/>
-		</table>
-	</context>
-</generatorConfiguration>
-```
 
 ### OpenAPI 3.0.1
 ---
@@ -133,7 +54,7 @@ mybatic-generator-oracle.xml
 
 ```yaml
 springdoc:
-  packagesToScan: com.mutu.spring
+  packagesToScan: org.jp.spring
   api-docs.path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
@@ -148,28 +69,6 @@ appInfo:
 swaggerui: `http://host:port/context-path/swagger-ui.html`
 
 apidoc/swagger-file: `http://host:port/context-path/api-doc`
-
-
-### Self-Signed Certificate
----
-Enabling `HTTPS` in Spring Boot. Create a self-signed certificate- PKCS12.
-
-```sh
-keytool -genkeypair -alias YOUR_ALIGS -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore <<FILE_PATH>>/YOUR.p12 -validity 3650
-```
-Copy `YOUR.p12` to `src/main/resoruces/keystore` directory. Configure the following config.
-
-```yaml
-server.ssl:
-  enabled: true
-  key-store-type: PKCS12
-  key-store: classpath:keystore/YOUR.p12
-  key-store-password: YOUR_PASSWORD
-  key-alias: YOUR_ALIGS
-```
-Note: `keytool` built-in tool of JVM. Goto JAVA_HOME/bin.
-
-**Related**: [springboot-ssl-restclient](https://github.com/zawthanoo/springboot-ssl-restclient)
 
 
 ### Log4j2 + ELK
