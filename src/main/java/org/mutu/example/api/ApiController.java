@@ -53,6 +53,12 @@ public class ApiController {
 		return ResponseEntity.ok(new StatusDto("OK"));
 	}
 	
+	@RequestMapping(value = "delete/{empId}", method = RequestMethod.DELETE)
+	public ResponseEntity<StatusDto> updateEmployee(@PathVariable int empId) {
+		employeeService.delete(empId);
+		return ResponseEntity.ok(new StatusDto("OK"));
+	}
+
 	@RequestMapping(value = "emplist", method = RequestMethod.GET)
 	public ResponseEntity<List<Employee>> getAllEmployee() {
 		List<Employee> result = employeeService.getAll();

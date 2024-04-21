@@ -35,7 +35,7 @@ public class WebSecurityConfig {
     /*
      * comment-in disable security  
      */
-//    @Bean
+   @Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     	http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
     	http.csrf(csrf -> csrf.disable());
@@ -50,7 +50,7 @@ public class WebSecurityConfig {
     /*
      * comment-in enable security  
      */
-    @Bean
+    // @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     	/*for h2 console*/
     	http.headers(headers -> headers.frameOptions(fo -> fo.disable()));

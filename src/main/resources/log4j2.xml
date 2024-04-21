@@ -4,13 +4,19 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
                 pattern="%d{yyyy-MMM-dd HH:mm:ss a} %-5level %logger{36} - %msg%n" />
+			<!-- <JsonLayout properties="false" stacktraceAsString="true" includeStacktrace="true" eventEol="true" compact="false" objectMessageAsJsonObject="true">
+				<KeyValuePair key="correlationId" value="$${ctx:correlationId}"/>
+				<KeyValuePair key="processFlow" value="$${ctx:processFlow}"/>
+				<KeyValuePair key="initrator" value="$${ctx:initrator}"/>
+				<KeyValuePair key="logtime" value="$${date:yyyy-MM-dd HH:mm:ss,SSS}" />				
+			</JsonLayout> 			 -->
         </Console>	
 		<Socket name="Socket" host="localhost" port="4560" protocol="tcp">
 			<JsonLayout properties="false" stacktraceAsString="true" includeStacktrace="true" eventEol="true" compact="true" objectMessageAsJsonObject="true">
 				<KeyValuePair key="correlationId" value="$${ctx:correlationId}"/>
 				<KeyValuePair key="processFlow" value="$${ctx:processFlow}"/>
 				<KeyValuePair key="initrator" value="$${ctx:initrator}"/>
-				<KeyValuePair key="logtime" value="$${date:yyyy-MM-dd'T'HH:mm:ss}" />
+				<KeyValuePair key="logtime" value="$${date:yyyy-MM-dd HH:mm:ss,SSS}" />								
 			</JsonLayout> 			
 		</Socket>
 	</Appenders>

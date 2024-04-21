@@ -33,12 +33,12 @@ public class ExceptionHandlerAspect extends PointCutConfig {
 			throwable = throwable.getCause();
 		}
 		if (throwable instanceof SQLException) {
-			dae = new DAOException(MessageCode.DB_PROCESS_ERROR, "Unexpected error in dao", (SQLException) throwable);
+			dae = new DAOException(MessageCode.DB_PROCESS_ERROR, "Unexpected error in dao", (SQLException) throwable, joinPoint.getArgs());
 		}
 		if (dae != null) {
 			throw dae;
 		} else {
-			throw new DAOException(MessageCode.DB_PROCESS_ERROR, "Unexpected error in dao", e);
+			throw new DAOException(MessageCode.DB_PROCESS_ERROR, "Unexpected error in dao", e, joinPoint.getArgs());
 		}
 	}
 
@@ -50,13 +50,12 @@ public class ExceptionHandlerAspect extends PointCutConfig {
 			throwable = throwable.getCause();
 		}
 		if (throwable instanceof SQLException) {
-			dae = new DAOException(MessageCode.DB_PROCESS_ERROR, "Unexpected error in mapper.",
-					(SQLException) throwable);
+			dae = new DAOException(MessageCode.DB_PROCESS_ERROR, "Unexpected error in mapper.", (SQLException) throwable, joinPoint.getArgs());
 		}
 		if (dae != null) {
 			throw dae;
 		} else {
-			throw new DAOException(MessageCode.DB_PROCESS_ERROR, "Unexpected error in mapper", e);
+			throw new DAOException(MessageCode.DB_PROCESS_ERROR, "Unexpected error in mapper", e, joinPoint.getArgs());
 		}
 	}
 

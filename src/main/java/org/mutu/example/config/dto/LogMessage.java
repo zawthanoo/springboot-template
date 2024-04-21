@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogMessage {
-	private String message;
+	private String process;
 	private Object payload;
 }

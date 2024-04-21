@@ -9,6 +9,7 @@ import org.mutu.example.dto.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
@@ -55,5 +56,10 @@ public class EmployeeDAO {
 		String query = sqlService.getSqlStatement(SQLQuery.EMPLOYEE_UPDATE);
 		SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(employee);
 		jdbcTemplate.update(query, namedParameters);
+	}
+
+	public void delete(int id) {
+		String query = sqlService.getSqlStatement(SQLQuery.EMPLOYEE_UPDATE);
+		jdbcTemplate.update(query, new MapSqlParameterSource().addValue("id", id));
 	}
 }

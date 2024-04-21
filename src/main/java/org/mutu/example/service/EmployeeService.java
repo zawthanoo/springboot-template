@@ -16,10 +16,10 @@ import com.nimbusds.jose.shaded.gson.JsonObject;
 @Service
 public class EmployeeService {
 	@Autowired
-	private EmployeeDAO employeeRepository;
+	private EmployeeDAO employeeDAO;
 	
 	public Employee getById(Long employeeId) {
-		Employee employee = employeeRepository.findById(employeeId);
+		Employee employee = employeeDAO.findById(employeeId);
 		return employee;
 	}
 	/*
@@ -32,25 +32,26 @@ public class EmployeeService {
 		employeeRepository.save(employee);
 		return employee;
 	}
-	
-	public void delete(Long employeeId) {
-		employeeRepository.deleteById(employeeId);
-	}
 	*/
+	
+	public void delete(int employeeId) {
+		employeeDAO.delete(employeeId);
+	}
+
 	public List<Employee> getAll() {
-		return employeeRepository.findAll();
+		return employeeDAO.findAll();
 	}
 	
 	public List<Employee> daoExceptionTest() {
-		return employeeRepository.daoExceptionTest();
+		return employeeDAO.daoExceptionTest();
 	}
 	
 	public void insert(Employee employee) {
-		employeeRepository.insert(employee);
+		employeeDAO.insert(employee);
 	}
 	
 	public void update(Employee employee) {
-		employeeRepository.update(employee);
+		employeeDAO.update(employee);
 	}
 	
 	public List<Employee> serviceExceptionTest() {

@@ -18,12 +18,9 @@ public class ApiError {
 	private String status;
 	private String messageCode;
 	private String message;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-	private LocalDateTime timestamp;
 	private Object payLoad;
 
 	private ApiError() {
-		timestamp = LocalDateTime.now();
 	}
 
 	public ApiError(String status) {
