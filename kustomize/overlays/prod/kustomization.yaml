@@ -1,6 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
 - ../../base
-#namePrefix: sit-
+
+namePrefix: prod-
 
 configMapGenerator:
 - name: springboot-template
@@ -14,7 +18,8 @@ secretGenerator:
 - name: springboot-template
   files:
     - application_secret_override.yaml
+
 images:
-- name: image-registry.openshift-image-registry.svc:5000/devteam/springboot-template
-  newName: image-registry.openshift-image-registry.svc:5000/devteam/springboot-template
-  newTag: 307964279cde50f5d4bd405b385debe0c72de1e4
+- name: ghcr.io/zawthanoo/springboot-template
+  newName: ghcr.io/zawthanoo/springboot-template
+  newTag: 1.0.0-6-43a4413

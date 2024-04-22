@@ -1,6 +1,4 @@
 server:
-  port: 8082
+  port: 8080
   servlet:
     contextPath: /demo
-my-config:
-  message: This is test message for PROD.
