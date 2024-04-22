@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-template
+  labels:
+    pipelinesascode.tekton.dev/on-event: pull_request
+    pipelinesascode.tekton.dev/on-target-branch: devteam
+    repo_name: springboot-template
+    app: springboot-template
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-template
+  template:
+    metadata:
+      labels:
+        app: springboot-template
+    spec:
+      containers:
+        - name: springboot-template
+          image: ghcr.io/zawthanoo/springboot-template:1.0.0-5-70eccea
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /demo/actuator/health/readiness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /demo/actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          envFrom:
+            - configMapRef:
+                name: springboot-template
+          resources:
+            requests:
+              memory: 1024Mi
+          volumeMounts:
+            - name: springboot-template-config-volume
+              readOnly: true
+              mountPath: "/opt/mutu/config/application_config_override.yaml"
+              subPath: application_config_override.yaml
+            - name: springboot-template-secret-config-volume
+              readOnly: true
+              mountPath: "/opt/mutu/config/application_secret_override.yaml"
+              subPath: application_secret_override.yaml
+      imagePullSecrets:
+        - name: ghcr-io-registry
+      volumes:
+        - name: springboot-template-secret-config-volume
+          secret:
+            secretName: springboot-template
+        - name: springboot-template-config-volume
+          configMap:
+            name: springboot-template
+            items:
+              - key: application_config_override.yaml
+                path: application_config_override.yaml
