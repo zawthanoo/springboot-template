@@ -11,19 +11,19 @@
 				<KeyValuePair key="logtime" value="$${date:yyyy-MM-dd HH:mm:ss,SSS}" />				
 			</JsonLayout> 			 -->
         </Console>	
-		<Socket name="Socket" host="localhost" port="4560" protocol="tcp">
+		<!-- <Socket name="Socket" host="localhost" port="4560" protocol="tcp">
 			<JsonLayout properties="false" stacktraceAsString="true" includeStacktrace="true" eventEol="true" compact="true" objectMessageAsJsonObject="true">
 				<KeyValuePair key="correlationId" value="$${ctx:correlationId}"/>
 				<KeyValuePair key="processFlow" value="$${ctx:processFlow}"/>
 				<KeyValuePair key="initrator" value="$${ctx:initrator}"/>
 				<KeyValuePair key="logtime" value="$${date:yyyy-MM-dd HH:mm:ss,SSS}" />								
-			</JsonLayout> 			
+			</JsonLayout> 			 -->
 		</Socket>
 	</Appenders>
 	<Loggers>
 		<AsyncLogger name="org.mutu" level="debug" additivity="false">
 			<AppenderRef ref="Console" />
-			<AppenderRef ref="Socket" />
+			<!-- <AppenderRef ref="Socket" /> -->
 		</AsyncLogger>
 		<AsyncLogger name="org.apache.catalina.core" level="off" additivity="false">
 			<AppenderRef ref="Console" />
