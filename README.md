@@ -174,3 +174,23 @@ Pre-define:
 ### Oauth 2 with Keycloak
 
 ![ELK](images/cicd-1.png)
+
+
+ingress for k8s deployment
+```yml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: http-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /demo
+        pathType: Prefix
+        backend:
+          service:
+            name: springboot-template
+            port:
+              number: 8080
+```
