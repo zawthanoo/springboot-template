@@ -1,10 +1,10 @@
 #shell executor pipeline
 stages:
-  - prepare & code scan
+  - prepare
   - maven-build
 
 build-tag-version:
-  stage: prepare & code scan
+  stage: prepare
   needs: []
   tags:
     - docker-runner
