@@ -34,9 +34,9 @@ sonarqube-code_analysis:
 
 maven-build:
   stage: maven-build
-  dependencies:
-    - build-tag-version
-  needs: [build-tag-version]
+  # dependencies:
+  #   - build-tag-version
+  # needs: [build-tag-version]
   tags:
     - docker-runner   
   script: 
