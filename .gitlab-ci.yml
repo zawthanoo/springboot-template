@@ -1,10 +1,7 @@
 #shell executor pipeline
 stages:
-  # - prepare & code scan
+  - prepare & code scan
   - maven-build
-  # - docker-build
-  # - docker-new-version-update
-  # - deploy
 
 build-tag-version:
   stage: prepare & code scan
@@ -22,21 +19,11 @@ build-tag-version:
     reports:
       dotenv: build.env
 
-sonarqube-code_analysis:
-  stage: prepare & code scan
-  needs: []
-  only:
-    - main
-  tags:
-    - docker-runner
-  script:
-    - mvn --batch-mode verify sonar:sonar -DskipTests=true -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_USERNAME -Dsonar.password=$SONAR_PASSWORD
-
 maven-build:
   stage: maven-build
-  # dependencies:
-  #   - build-tag-version
-  # needs: [build-tag-version]
+  dependencies:
+    - build-tag-version
+  needs: [build-tag-version]
   tags:
     - docker-runner   
   script: 
@@ -47,55 +34,3 @@ maven-build:
   artifacts:
     paths:
       - target/*.jar
-
-docker-build:
-  stage: docker-build
-  dependencies:
-    - build-tag-version
-    - maven-build
-  tags:
-    - docker-runner
-  script:
-    - docker login -u $DOCKER_USER -p "$DOCKER_PASS"
-    - docker build -t $DOCKER_REPO/$ARTIFACT_ID:$VERSION .
-    - docker push $DOCKER_REPO/$ARTIFACT_ID:$VERSION
-    - echo "Build docker images is done. $ARTIFACT_ID:$VERSION"
-
-docker-new-version-update:
-  stage: docker-new-version-update
-  dependencies:
-    - build-tag-version
-    - maven-build  
-    - docker-build
-  tags:
-    - docker-runner
-  script:
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 700 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -t rsa 192.168.50.24 > ~/.ssh/known_hosts
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - chmod 644 ~/.ssh/known_hosts
-
-    - git clone --single-branch --branch main git@192.168.50.24:local/argocd-apps.git
-    - cd argocd-apps
-    - yq -i ".spec.template.spec.containers.[0].image = \"$DOCKER_REPO/$ARTIFACT_ID:$VERSION\"" springboot-gitlabci-manifests/uat/deployment.yaml
-    - git add .
-    - git commit -m "New image update - $VERSION"
-    - git push
-
-deploy:
-  stage: deploy
-  dependencies:
-    - build-tag-version
-    - maven-build  
-    - docker-build
-    - docker-new-version-update
-  tags:
-    - docker-runner
-  script:
-    - argocd login ${ARGOCD_URL} --username ${ARGOCD_USERNAME} --password ${ARGOCD_PASSWORD} --insecure
-#    - argocd app sync $ARTIFACT_ID --force
-    - argocd app actions run $ARTIFACT_ID restart --kind Deployment --all
