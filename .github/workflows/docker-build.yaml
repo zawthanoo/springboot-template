@@ -60,8 +60,8 @@ jobs:
           repository: zawthanoo/argocd-apps
           valueFile: '/springboot-template/overlays/uat/kustomization.yaml'
           branch: main
-          # targetBranch: main <-- for pull request
-          # createPR: 'true' <-- for pull request
+          createPR: 'false'
+          # targetBranch: main <-- for pull request          
           # title: 'Version Updates' <-- for pull request
           # description: 'Test GitHub Action' <-- for pull request
           message: 'Update lasted docker image version'
