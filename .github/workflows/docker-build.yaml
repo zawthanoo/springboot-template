@@ -51,8 +51,8 @@ jobs:
           NEW_DOCKER_IMAGE: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
         with:
           envs: GIT_USER, GIT_TOKEN, NEW_DOCKER_IMAGE
-          repository: zawthanoo/springboot-template-deployment
-          valueFile: 'deployment.yaml'
+          repository: argocd-apps/springboot-template
+          valueFile: 'overlays/uat/kustomization.yaml'
           branch: main
           # targetBranch: main <-- for pull request
           # createPR: 'true' <-- for pull request
@@ -61,7 +61,7 @@ jobs:
           message: 'Update lasted docker image version'           
           changes: |
             {
-              ".spec.template.spec.containers.[0].image": "${NEW_DOCKER_IMAGE}"
+              "images.[0].newTag": "${NEW_DOCKER_IMAGE}"
             }    
       # - name: Deploy
       #   uses: appleboy/ssh-action@v1.0.0
