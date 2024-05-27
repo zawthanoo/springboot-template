@@ -26,30 +26,31 @@ jobs:
         run: echo ::set-output name=version::$(echo ${{ steps.pom-version.outputs.version }}-${{github.run_number}}-${GITHUB_SHA::7})
         id: tag-version
   
-      # - name: Maven build
-      #   run: mvn clean install
+      - name: Maven build
+        run: mvn clean install
               
-      # - name: Login to ghcr.io
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.MY_GITHUB_TOKEN }}        
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.MY_GITHUB_TOKEN }}        
           
-      # - name: Build and Push Image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
-      - name: Checkout Target Repository
+      - name: Build and Push Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
+          
+      - name: Checkout Kustomize chart Repository
         uses: actions/checkout@v3
         with:
           repository: zawthanoo/argocd-apps
-          path: infrastructure
+          path: ./temp
           token: ${{ secrets.MY_GITHUB_TOKEN }} 
 
-      - name: Edit customize chart
+      - name: Updated lasted docker version
         uses: fjogeleit/yaml-update-action@main
         with:
           repository: zawthanoo/argocd-apps
@@ -61,11 +62,12 @@ jobs:
           # description: 'Test GitHub Action' <-- for pull request
           message: 'Update lasted docker image version'
           token: ${{ secrets.MY_GITHUB_TOKEN }}
-          workDir: infrastructure
+          workDir: ./temp
           changes: |
             {
               "images[0].newTag": "ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}"
             }    
+            
       # - name: Deploy
       #   uses: appleboy/ssh-action@v1.0.0
       #   env:
