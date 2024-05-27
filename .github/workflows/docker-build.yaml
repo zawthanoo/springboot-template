@@ -58,7 +58,7 @@ jobs:
         with:
           envs: GIT_USER, GIT_TOKEN, NEW_DOCKER_IMAGE
           repository: zawthanoo/argocd-apps
-          valueFile: '/springboot-template/overlays/uat/kustomization.yaml'
+          valueFile: 'springboot-template/overlays/uat/kustomization.yaml'
           branch: main
           createPR: 'false'
           # targetBranch: main <-- for pull request          
