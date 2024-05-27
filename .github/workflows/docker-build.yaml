@@ -28,31 +28,31 @@ jobs:
       run: echo ::set-output name=version::$(echo ${{ steps.pom-version.outputs.version }}-${{github.run_number}}-${GITHUB_SHA::7})
       id: tag-version
 
-    - name: Edit Kuztomize Chart
-      uses: actions/checkout@master
-      with:
-        repository: zawthanoo/argocd-apps
-        token: ${{ secrets.MY_GITHUB_TOKEN }}
-        script: |
-          ls -la
-          yq --version
+    # - name: Edit Kuztomize Chart
+    #   uses: actions/checkout@master
+    #   with:
+    #     repository: zawthanoo/argocd-apps
+    #     token: ${{ secrets.MY_GITHUB_TOKEN }}
+    #     script: |
+    #       ls -la
+    #       yq --version
     
-    # - name: Maven build
-    #   run: mvn clean install
+    - name: Maven build
+      run: mvn clean install
             
-    # - name: Login to ghcr.io
-    #   uses: docker/login-action@v3
-    #   with:
-    #     registry: ghcr.io
-    #     username: ${{ github.actor }}
-    #     password: ${{ secrets.MY_GITHUB_TOKEN }}        
+    - name: Login to ghcr.io
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.MY_GITHUB_TOKEN }}        
         
-    # - name: Build and Push Image
-    #   uses: docker/build-push-action@v5
-    #   with:
-    #     context: .
-    #     push: true
-    #     tags: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
+    - name: Build and Push Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
     
     # - name: Deploy
     #   uses: appleboy/ssh-action@v1.0.0
