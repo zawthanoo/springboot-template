@@ -69,7 +69,7 @@ jobs:
           workDir: infrastructure
           changes: |
             {
-              "images.[0].newTag": "${NEW_DOCKER_IMAGE}"
+              "images[0].newTag": "${NEW_DOCKER_IMAGE}"
             }    
       # - name: Deploy
       #   uses: appleboy/ssh-action@v1.0.0
