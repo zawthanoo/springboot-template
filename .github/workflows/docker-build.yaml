@@ -42,6 +42,12 @@ jobs:
       #     context: .
       #     push: true
       #     tags: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
+      - name: Checkout Target Repository
+        uses: actions/checkout@v3
+        with:
+          repository: argocd-apps/springboot-template
+          path: infrastructure
+          token: ${{ secrets.MY_GITHUB_TOKEN }} 
 
       - name: Edit customize chart
         uses: fjogeleit/yaml-update-action@main
@@ -58,7 +64,8 @@ jobs:
           # createPR: 'true' <-- for pull request
           # title: 'Version Updates' <-- for pull request
           # description: 'Test GitHub Action' <-- for pull request
-          message: 'Update lasted docker image version'           
+          message: 'Update lasted docker image version'
+          token: ${{ secrets.MY_GITHUB_TOKEN }}
           changes: |
             {
               "images.[0].newTag": "${NEW_DOCKER_IMAGE}"
