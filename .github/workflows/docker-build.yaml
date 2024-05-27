@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: zawthanoo/argocd-apps
-          path: /temp
+          path: temp_workspace
           token: ${{ secrets.MY_GITHUB_TOKEN }} 
 
       - name: Updated lasted docker version
@@ -62,7 +62,7 @@ jobs:
           # description: 'Test GitHub Action' <-- for pull request
           message: 'Update lasted docker image version'
           token: ${{ secrets.MY_GITHUB_TOKEN }}
-          workDir: /temp
+          workDir: temp_workspace
           changes: |
             {
               "images[0].newTag": "ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}"
