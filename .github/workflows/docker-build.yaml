@@ -51,12 +51,7 @@ jobs:
 
       - name: Edit customize chart
         uses: fjogeleit/yaml-update-action@main
-        env:
-          GIT_USER: ${{ github.actor }}
-          GIT_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}         
-          NEW_DOCKER_IMAGE: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
         with:
-          envs: GIT_USER, GIT_TOKEN, NEW_DOCKER_IMAGE
           repository: zawthanoo/argocd-apps
           valueFile: 'springboot-template/overlays/uat/kustomization.yaml'
           branch: main
@@ -69,7 +64,7 @@ jobs:
           workDir: infrastructure
           changes: |
             {
-              "images[0].newTag": "${NEW_DOCKER_IMAGE}"
+              "images[0].newTag": "ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}"
             }    
       # - name: Deploy
       #   uses: appleboy/ssh-action@v1.0.0
