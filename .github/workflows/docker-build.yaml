@@ -18,13 +18,13 @@ jobs:
           distribution: 'temurin'
           cache: maven
       
-      # - name: Extract Maven project version
-      #   run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-      #   id: pom-version
+      - name: Extract Maven project version
+        run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+        id: pom-version
   
-      # - name: Bild tag version
-      #   run: echo ::set-output name=version::$(echo ${{ steps.pom-version.outputs.version }}-${{github.run_number}}-${GITHUB_SHA::7})
-      #   id: tag-version
+      - name: Bild tag version
+        run: echo ::set-output name=version::$(echo ${{ steps.pom-version.outputs.version }}-${{github.run_number}}-${GITHUB_SHA::7})
+        id: tag-version
   
       # - name: Maven build
       #   run: mvn clean install
@@ -57,8 +57,8 @@ jobs:
           NEW_DOCKER_IMAGE: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
         with:
           envs: GIT_USER, GIT_TOKEN, NEW_DOCKER_IMAGE
-          repository: argocd-apps/springboot-template
-          valueFile: 'overlays/uat/kustomization.yaml'
+          repository: zawthanoo/argocd-apps
+          valueFile: '/springboot-template/overlays/uat/kustomization.yaml'
           branch: main
           # targetBranch: main <-- for pull request
           # createPR: 'true' <-- for pull request
@@ -66,6 +66,7 @@ jobs:
           # description: 'Test GitHub Action' <-- for pull request
           message: 'Update lasted docker image version'
           token: ${{ secrets.MY_GITHUB_TOKEN }}
+          workDir: infrastructure
           changes: |
             {
               "images.[0].newTag": "${NEW_DOCKER_IMAGE}"
