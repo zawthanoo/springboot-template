@@ -1,4 +1,4 @@
-name: Deployment on EC2 Microk8s
+name: Deployment
 
 on:
   push:
