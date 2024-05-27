@@ -45,7 +45,7 @@ jobs:
       - name: Checkout Target Repository
         uses: actions/checkout@v3
         with:
-          repository: argocd-apps/springboot-template
+          repository: zawthanoo/argocd-apps
           path: infrastructure
           token: ${{ secrets.MY_GITHUB_TOKEN }} 
 
