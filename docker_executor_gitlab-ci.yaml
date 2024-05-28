@@ -1,0 +1,83 @@
+#docker executor pipeline
+
+#image: maven:3.8.3-openjdk-17
+image: maven:latest
+cache:
+  paths:
+    - .m2/repository
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+stages:
+  - build-tag-version
+  - maven-build
+  - docker-build
+  - deploy
+
+build-tag-version:
+  stage: build-tag-version
+  tags:
+    - docker-runner    
+  script: 
+    - |
+      POM_VERSION=$(mvn --non-recursive help:evaluate -Dexpression=project.version -q -DforceStdout)
+      ARTIFACT_ID=$(mvn --non-recursive help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+      VERSION=${POM_VERSION}-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
+      echo "Version - $VERSION"
+      echo "VERSION=$VERSION" >> build.env
+      echo "ARTIFACT_ID=$ARTIFACT_ID" >> build.env  
+  artifacts:
+    paths:
+      dotenv: build.env
+
+maven-build:
+  stage: maven-build
+  dependencies:
+    - build-tag-version
+  tags:
+    - docker-runner    
+  script: 
+    - |
+      mvn dependency:go-offline
+      mvn versions:set -DnewVersion=$VERSION
+      mvn -s ci_settings.xml -DskipTests clean package        
+  artifacts:
+    paths:
+      - target/*.jar
+
+docker-build:
+  image: gitlab/dind
+  services:
+    - docker:dind
+  stage: docker-build
+  dependencies:
+    - build-tag-version
+    - maven-build
+  tags:
+    - docker-runner
+  script:
+    - |
+      docker login -u $DOCKER_USER -p "$DOCKER_PASS" $DOCKER_REPO
+      docker build -t $DOCKER_REPO/$DOCKER_REPO_ORG/$ARTIFACT_ID:$VERSION .
+      docker push $DOCKER_REPO/$DOCKER_REPO_ORG/$ARTIFACT_ID:$VERSION
+      echo "Build docker images is done. $ARTIFACT_ID:$VERSION"
+      docker tag $DOCKER_REPO/$DOCKER_REPO_ORG/$ARTIFACT_ID:$VERSION $DOCKER_REPO/$DOCKER_REPO_ORG/$ARTIFACT_ID:latest
+      docker push $DOCKER_REPO/$DOCKER_REPO_ORG/$ARTIFACT_ID:latest
+      echo "Build docker images is done. $ARTIFACT_ID:latest"
+
+deploy:
+  image: docker:23.0.6
+  dependencies:
+    - build-tag-version
+    - maven-build  
+    - docker-build
+  tags:
+    - docker-runner
+  stage: deploy
+  script:
+    - apk add --no-cache git curl bash
+    - curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.0.3/argocd-linux-amd64
+    - chmod +x /usr/local/bin/argocd
+    - argocd login 192.168.0.148:8080 --username ${ARGOCD_USERNAME} --password ${ARGOCD_PASSWORD} --insecure
+    - argocd app actions run $ARTIFACT_ID restart --kind Deployment --all
