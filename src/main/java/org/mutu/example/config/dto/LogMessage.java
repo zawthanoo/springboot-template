@@ -1,13 +1,18 @@
 package org.mutu.example.config.dto;
 
-import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.message.ObjectMessage;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class LogMessage {
 	private String process;
-	private Object payload;
+	private ObjectMessage payload;
+	
+	public LogMessage(String process, Object payload) {
+		this.process = process;
+		this.payload = new ObjectMessage(payload);
+	}
 }

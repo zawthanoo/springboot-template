@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *        result as JSON format.<br/>
  *        Note : A method before end will not be hit if there is occurred an
  *        exception.<br/>
+ * @update 28-05-2024 <br/>
+ * 		 Update for log4j json layout to send Kafa and elasticsearch       
  */
 @Aspect
 @Component
@@ -34,7 +36,6 @@ public class LoggingAspect extends PointCutConfig {
 	@Before("publicMethodInsideServiceBean() || publicMethodInsideDaoBean()")
 	public void beforeServiceDao(JoinPoint joinPoint) {
 		String logMessage = String.format("%s.%s() method has been started.", joinPoint.getSignature().getDeclaringType(), joinPoint.getSignature().getName());
-		/*
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			String parameter = mapper.writeValueAsString(joinPoint.getArgs());
@@ -43,15 +44,12 @@ public class LoggingAspect extends PointCutConfig {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 		}
-		 */
-		logger.debug(new ObjectMessage(new LogMessage(logMessage, joinPoint.getArgs())));
 	}
 
 	// only hit without throwing exception
 	@AfterReturning(pointcut = "publicMethodInsideServiceBean() || publicMethodInsideDaoBean()", returning = "result")
 	public void afterReturningServiceDao(JoinPoint joinPoint, Object result) {
 		String logMessage = String.format("%s.%s() method has been finished.", joinPoint.getSignature().getDeclaringType(), joinPoint.getSignature().getName());
-		/*
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			String returnResult = mapper.writeValueAsString(result);
@@ -60,8 +58,5 @@ public class LoggingAspect extends PointCutConfig {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 		}
-		 */
-		logger.debug(new ObjectMessage(new LogMessage(logMessage, result)));
 	}
-
 }
