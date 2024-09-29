@@ -10,14 +10,14 @@
 				<EventTemplateAdditionalField key="service" format="string" value="$${ctx:service}"/>
 				<EventTemplateAdditionalField key="initrator" format="string" value="$${ctx:initrator}"/>
 			</JsonTemplateLayout>
-        	<Property name="bootstrap.servers">192.168.50.242:9092</Property>
+        	<Property name="bootstrap.servers">172.16.16.241:9200</Property>
     	</Kafka>        
     </Appenders>
  
     <Loggers>
 		<AsyncLogger name="org.mutu" level="debug" additivity="false">
 			<AppenderRef ref="Console" />
-			<!-- <AppenderRef ref="Kafka" /> -->
+			<AppenderRef ref="Kafka" />
 		</AsyncLogger>
 		<AsyncLogger name="org.apache.catalina.core" level="off" additivity="false">
 			<AppenderRef ref="Console" />
