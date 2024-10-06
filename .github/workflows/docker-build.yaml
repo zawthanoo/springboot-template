@@ -41,7 +41,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/zawthanoo/spring-rest-helloworld:${{ steps.tag-version.outputs.version }}
+          tags: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
           
       - name: Checkout Kustomize chart Repository
         uses: actions/checkout@v3
@@ -54,7 +54,7 @@ jobs:
         uses: fjogeleit/yaml-update-action@main
         with:
           repository: zawthanoo/argocd-apps
-          valueFile: 'spring-rest-helloworld/overlays/uat/kustomization.yaml'
+          valueFile: 'springboot-template/overlays/uat/kustomization.yaml'
           branch: main
           createPR: 'false'
           # targetBranch: main <-- for pull request          
