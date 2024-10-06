@@ -1,4 +1,4 @@
-name: Deployment
+name: Docker image build & push
 
 on:
   push:
@@ -65,27 +65,5 @@ jobs:
           workDir: temp_workspace
           changes: |
             {
-              "images[0].newTag": "ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}"
-            }    
-            
-      # - name: Deploy
-      #   uses: appleboy/ssh-action@v1.0.0
-      #   env:
-      #     GIT_USER: ${{ github.actor }}
-      #     GIT_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}        
-      #     NEW_DOCKER_IMAGE: ghcr.io/zawthanoo/springboot-template:${{ steps.tag-version.outputs.version }}
-      #   with:
-      #     host: ${{ secrets.AWS_K8S_HOSTNAME }}
-      #     username: ${{ secrets.AWS_K8S_USER_NAME }}
-      #     key: ${{ secrets.AWS_PRIVATE_KEY }}      
-      #     envs: GIT_USER, GIT_TOKEN, NEW_DOCKER_IMAGE
-      #     script: |
-      #       echo "New docker image $NEW_DOCKER_IMAGE"
-      #       rm -rf springboot-template-deployment
-      #       git clone https://$GIT_USER:$GIT_TOKEN@github.com/zawthanoo/springboot-template-deployment.git
-      #       cd springboot-template-deployment
-      #       yq eval ".spec.template.spec.containers.[0].image = \"${NEW_DOCKER_IMAGE}\"" -i deployment.yaml
-      #       kubectl apply -f config.yaml -n sit
-      #       kubectl apply -f secret.yaml -n sit
-      #       kubectl apply -f deployment.yaml -n sit
-      #       kubectl apply -f service.yaml -n sit
+              "images[0].newTag": "${{ steps.tag-version.outputs.version }}"
+            }
