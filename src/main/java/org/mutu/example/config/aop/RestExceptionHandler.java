@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -12,21 +11,17 @@ import org.mutu.example.config.MessageCode;
 import org.mutu.example.config.dto.ApiError;
 import org.mutu.example.config.dto.ApiStatus;
 import org.mutu.example.config.dto.InvalidField;
-import org.mutu.example.config.dto.LogMessage;
 import org.mutu.example.config.exception.BusinessLogicException;
 import org.mutu.example.config.exception.DAOException;
+import org.mutu.example.config.logging.LogMessage;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
  * @author Zaw Than Oo
@@ -39,7 +34,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+public class RestExceptionHandler {
 	
 	private Logger logger = LogManager.getLogger(RestExceptionHandler.class);
 
@@ -70,6 +65,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return buildResponseEntity(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+		List<InvalidField> invalidFieldList = new ArrayList<InvalidField>();
+		for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+			invalidFieldList.add(new InvalidField(error.getField(), error.getCode(), error.getDefaultMessage()));
+		}
+		ApiError apiError = new ApiError(ApiStatus.FAILED);
+		apiError.setMessage("Request parameter is invalid.");
+		apiError.setMessageCode(MessageCode.INVALID_REQUEST_PARAMETER);
+		apiError.setPayLoad(invalidFieldList);
+		return (ResponseEntity) buildResponseEntity(apiError, HttpStatus.BAD_REQUEST);
+	}
+
+
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ApiError> handle(Exception ex) {
 		StringWriter errors = new StringWriter();
@@ -82,19 +91,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return buildResponseEntity(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		List<InvalidField> invalidFieldList = new ArrayList<InvalidField>();
-		for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-			invalidFieldList.add(new InvalidField(error.getField(), error.getCode(), error.getDefaultMessage()));
-		}
-		ApiError apiError = new ApiError(ApiStatus.FAILED);
-		apiError.setMessage("Request parameter is invalid.");
-		apiError.setMessageCode(MessageCode.INVALID_REQUEST_PARAMETER);
-		apiError.setPayLoad(invalidFieldList);
-		return (ResponseEntity) buildResponseEntity(apiError, HttpStatus.BAD_REQUEST);
-	}
-
 	private ResponseEntity<ApiError> buildResponseEntity(ApiError apiError, HttpStatus httpStatus) {
 		return new ResponseEntity<ApiError>(apiError, httpStatus);
 	}

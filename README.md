@@ -194,3 +194,23 @@ spec:
             port:
               number: 8080
 ```
+
+
+curl --location 'http://localhost:8083/connectors' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "name": "elasticsearch-sink",
+  "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "tasks.max": "1",
+    "topics": "log4j-test",
+    "connection.username": "elastic",
+    "connection.password": "elastic@123",    
+    "schema.ignore": "true",
+    "connection.url": "http://172.16.16.10:9200",
+    "type.name": "kafka-connect",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.ignore": "true",
+    "value.converter.schemas.enable": "false"
+  }
+}'

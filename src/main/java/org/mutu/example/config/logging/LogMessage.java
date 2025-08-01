@@ -1,4 +1,4 @@
-package org.mutu.example.config.dto;
+package org.mutu.example.config.logging;
 
 import org.apache.logging.log4j.message.ObjectMessage;
 

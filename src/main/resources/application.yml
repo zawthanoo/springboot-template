@@ -11,70 +11,28 @@ server:
 
 spring.main.allow-bean-definition-overriding: true
 spring.h2.console.enabled: true
+
 # --------------------------------------------------
-# database config
+# Database config
 # --------------------------------------------------
-employee:
-  datasource:
-    jdbcUrl: jdbc:h2:mem:employeedb
-#    jdbcUrl: jdbc:h2:file:/data/demo <- prevent data loss after application restart.
-    username: sa
-    password: password
-    driverClassName: org.h2.Driver
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      connection-timeout: 50000
-      idle-timeout: 300000
-      max-lifetime: 900000
-      maximum-pool-size: 10
-      minimum-idle: 10
-      pool-name: ConnectionPool
-      connection-test-query: select 1 from dual
-      data-source-properties:
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-        seServerPrepStmts: true
-        useLocalSessionState: true
-        rewriteBatchedStatements: true
-        cacheResultSetMetadata: true
-        cacheServerConfiguration: true
-        elideSetAutoCommits: true
-        maintainTimeStats: false
-department:
-  datasource:
-    jdbcUrl: jdbc:h2:mem:departmentdb
-#    jdbcUrl: jdbc:h2:file:/data/demo <- prevent data loss after application restart.
-    username: sa
-    password: password
-    driverClassName: org.h2.Driver
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      connection-timeout: 50000
-      idle-timeout: 300000
-      max-lifetime: 900000
-      maximum-pool-size: 10
-      minimum-idle: 10
-      pool-name: ConnectionPool
-      connection-test-query: select 1 from dual
-      data-source-properties:
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-        seServerPrepStmts: true
-        useLocalSessionState: true
-        rewriteBatchedStatements: true
-        cacheResultSetMetadata: true
-        cacheServerConfiguration: true
-        elideSetAutoCommits: true
-        maintainTimeStats: false        
+database:
+  primary:
+    r2dbc:
+      url: r2dbc:pool:postgresql://localhost:26257/devtest?sslmode=disable
+      username: devuser
+      password:
+    r2dbc.pool:
+      initial-size: 5
+      max-size: 10
+      max-idle-time: 30m
+      max-create-connection-time: 5s
+      validation-query: SELECT 1        
 
 # --------------------------------------------------
 # Oauth 2, security config
 # --------------------------------------------------
 spring.security.enabled: true
-spring.security.oauth2.resourceserver.jwt.issuer-uri: http://localhost:8080/realms/springboot-keycloak
-spring.security.oauth2.resourceserver.jwt.jwk-set-uri: http://localhost:8080/realms/springboot-keycloak/protocol/openid-connect/certs
+spring.security.oauth2.resourceserver.jwt.jwk-set-uri: http://127.0.0.1:8080/oauth2/jwks
 
 # --------------------------------------------------
 # CORS Config
@@ -103,5 +61,4 @@ appInfo:
   license.url: 'http://mutu.nocontact.com'
   
 header-key-list:
-#  log4jThreadContextList:
-  log4jThreadContextList: HEADER_KEY_1, HEADER_KEY_2, HEADER_KEY_3  
+  log4jThreadContextList: correlationId, service, initrator  

@@ -1,24 +1,16 @@
 package org.mutu.example.config.logging;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ObjectMessage;
-import org.mutu.example.config.dto.LogHeader;
-import org.mutu.example.config.dto.LogHttpRequestEntity;
-import org.mutu.example.config.dto.LogHttpResponseEntity;
-import org.mutu.example.config.dto.LogMessage;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 /**
  * @author Zaw Than Oo
- * @since 01-DEC-2018 <br/>
+ * @since 30-July-2025 <br/>
  *        This LoggingService to log and track for http request and response.
  *        ObjectMessage is used to support for log4j jsonlogger appender.
  */
@@ -26,44 +18,34 @@ import jakarta.servlet.http.HttpServletResponse;
 public class LoggingService {
 	private static final Logger logger = LogManager.getLogger(LoggingService.class);
 
-	public void logRequest(HttpServletRequest httpServletRequest, Object body) {
-		List<LogHeader> headers = buildHeadersMap(httpServletRequest);
+	public void logRequest(String method, String uri, HttpHeaders headers, String body) {
+		List<LogHeader> logHeaders = buildHeadersMap(headers);
 		LogHttpRequestEntity entity = new LogHttpRequestEntity();
 		entity.setType("http-request");
-		entity.setMethod(httpServletRequest.getMethod());
-		entity.setHeaders(headers);
-		entity.setPath(httpServletRequest.getRequestURI());
+		entity.setMethod(method);
+		entity.setHeaders(logHeaders);
+		entity.setPath(uri);
 		entity.setBody(body);
 		logger.debug(new ObjectMessage(new LogMessage("Request", entity)));
 	}
 
-	public void logResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object body) {
-		List<LogHeader> headers = buildHeadersMap(httpServletResponse);
+	public void logResponse(String method, String uri, String statusCode, HttpHeaders headers, String body) {
+		List<LogHeader> logHeaders = buildHeadersMap(headers);
 		LogHttpResponseEntity entity = new LogHttpResponseEntity();
 		entity.setType("http-response");
-		entity.setMethod(httpServletRequest.getMethod());
-		entity.setHeaders(headers);
-		entity.setPath(httpServletRequest.getRequestURI());
+		entity.setMethod(method);
+		entity.setHeaders(logHeaders);
+		entity.setPath(uri);
+		entity.setStatus(statusCode);
 		entity.setBody(body);
 		logger.debug(new ObjectMessage(new LogMessage("Response", entity)));
 	}
 
-	private List<LogHeader> buildHeadersMap(HttpServletRequest request) {
+	private List<LogHeader> buildHeadersMap(HttpHeaders headers) {
 		List<LogHeader> list = new ArrayList<LogHeader>();
-		Enumeration<String> headerNames = request.getHeaderNames();
-		while (headerNames.hasMoreElements()) {
-			String key = (String) headerNames.nextElement();
-			String value = request.getHeader(key);
-			list.add(new LogHeader(key, value));
-		}
-		return list;
-	}
-	
-	private List<LogHeader> buildHeadersMap(HttpServletResponse response) {
-		List<LogHeader> list = new ArrayList<LogHeader>();
-		Collection<String> headerNames = response.getHeaderNames();
-		for (String header : headerNames) {
-			list.add(new LogHeader(header, response.getHeader(header)));
+		for (String headerName : headers.keySet()) {
+			String value = headers.getFirst(headerName);
+			list.add(new LogHeader(headerName, value));
 		}
 		return list;
 	}

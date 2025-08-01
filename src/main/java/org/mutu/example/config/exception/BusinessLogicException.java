@@ -1,13 +1,11 @@
 package org.mutu.example.config.exception;
 
-import org.springframework.transaction.TransactionSystemException;
-
 /**
  * @author Zaw Than Oo
  * @since 01-DEC-2018 <br/>
  *        This classed is used to throw exception for business logic.
  */
-public class BusinessLogicException extends TransactionSystemException {
+public class BusinessLogicException extends RuntimeException {
 	private static final long serialVersionUID = -4636343176401289427L;
 	private String errorCode;
 	private Object payload;

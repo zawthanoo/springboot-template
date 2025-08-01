@@ -4,14 +4,9 @@ import java.util.List;
 
 import org.mutu.example.config.exception.BusinessLogicException;
 import org.mutu.example.dao.EmployeeDAO;
-import org.mutu.example.dao.SQLQuery;
 import org.mutu.example.dto.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
-
-import com.nimbusds.jose.shaded.gson.JsonObject;
 
 @Service
 public class EmployeeService {

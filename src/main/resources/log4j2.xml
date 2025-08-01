@@ -10,7 +10,7 @@
 				<EventTemplateAdditionalField key="service" format="string" value="$${ctx:service}"/>
 				<EventTemplateAdditionalField key="initrator" format="string" value="$${ctx:initrator}"/>
 			</JsonTemplateLayout>
-        	<Property name="bootstrap.servers">172.16.16.241:9200</Property>
+        	<Property name="bootstrap.servers">172.16.16.1:9092</Property>
     	</Kafka>        
     </Appenders>
  
