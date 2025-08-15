@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
-    <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} %-5level %logger{36} - %msg%n" />
-        </Console>
-		<Kafka name="Kafka" topic="log4j-test">
-      		<JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json">
-				<EventTemplateAdditionalField key="correlationId" format="string" value="$${ctx:correlationId}"/>				
-				<EventTemplateAdditionalField key="service" format="string" value="$${ctx:service}"/>
-				<EventTemplateAdditionalField key="initrator" format="string" value="$${ctx:initrator}"/>
-			</JsonTemplateLayout>
-        	<Property name="bootstrap.servers">172.16.16.1:9092</Property>
-    	</Kafka>        
-    </Appenders>
- 
-    <Loggers>
-		<AsyncLogger name="org.mutu" level="debug" additivity="false">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} $${ctx:x-root-id} $${ctx:initrator} [%t] %-5level %logger{36} - %msg%n" />
+
+		</Console>
+		<RollingFile name="DailyLog" fileName="D:/dev/xyphatech/springboot-template/logs/springboot-template.log" filePattern="logs/springboot-template-%d{yyyy-MM-dd}.log.gz">
+			 <JsonLayout properties="false" stacktraceAsString="true" includeStacktrace="true" eventEol="true" compact="false" objectMessageAsJsonObject="true">
+				<KeyValuePair key="x-root-id" value="$${ctx:x-root-id}"/>
+				<KeyValuePair key="initrator" value="$${ctx:initrator}"/>
+				<KeyValuePair key="timestamp" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}" />
+			</JsonLayout> 
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete action="DELETE">
+					<IfFileName glob="logs/*.log.gz" />
+					<IfLastModified age="7d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<AsyncLogger name="org.mutu" level="debug"
+			additivity="false">
 			<AppenderRef ref="Console" />
-			<AppenderRef ref="Kafka" />
+			<AppenderRef ref="DailyLog" />
+			<!-- <AppenderRef ref="Kafka" /> -->
 		</AsyncLogger>
-		<AsyncLogger name="org.apache.catalina.core" level="off" additivity="false">
+		<!-- <AsyncLogger name="io.r2dbc.postgresql.client.ReactorNettyClient" 
+			level="debug"> <AppenderRef ref="Console" /> </AsyncLogger> -->
+		<AsyncLogger name="org.apache.catalina.core" level="off"
+			additivity="false">
 			<AppenderRef ref="Console" />
-		</AsyncLogger>		
+		</AsyncLogger>
 		<AsyncLogger name="org.springframework" level="error">
 			<AppenderRef ref="Console" />
-		</AsyncLogger>		
+		</AsyncLogger>
 		<AsyncRoot level="error">
 			<AppenderRef ref="Console" />
 		</AsyncRoot>
-    </Loggers>
+	</Loggers>
 </Configuration>

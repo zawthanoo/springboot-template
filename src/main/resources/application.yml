@@ -38,9 +38,9 @@ spring.security.oauth2.resourceserver.jwt.jwk-set-uri: http://127.0.0.1:8080/oau
 # CORS Config
 # --------------------------------------------------
 corsConfig:
-  allow-origin: "*"
-  allow-credentials: true 
-  allow-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+  allow-origin: http://localhost:3000,https://myapp.com
+  allow-credentials: false 
+  allow-methods: GET,POST
   allow-headers: Authorization,Access-Control-Allow-Origin,Content-Type,User-Account,sessionID,X-XSS-Protection,X-Content-Type-Options,Cache-Control,Pragma,Expires,X-Frame-Options,Content-Security-Policy
   expose-headers: Authorization,Content-Disposition
 # --------------------------------------------------
@@ -61,4 +61,4 @@ appInfo:
   license.url: 'http://mutu.nocontact.com'
   
 header-key-list:
-  log4jThreadContextList: correlationId, service, initrator  
+  log4jThreadContextList: x-root-id, initrator  
